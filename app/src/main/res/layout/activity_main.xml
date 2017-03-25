@@ -7,6 +7,11 @@
     android:orientation="vertical"
     tools:context="com.example.rent.carsdatabase.MainActivity">
 
+    <AutoCompleteTextView
+        android:id="@+id/autocomplete_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <Button
         android:id="@+id/add_new_car"
         android:layout_width="wrap_content"

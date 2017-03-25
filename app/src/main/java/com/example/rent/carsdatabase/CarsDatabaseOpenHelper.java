@@ -2,8 +2,10 @@ package com.example.rent.carsdatabase;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by RENT on 2017-03-25.
@@ -44,11 +46,38 @@ public class CarsDatabaseOpenHelper extends SQLiteOpenHelper {
         return value != -1;
     }
 
+    public Cursor getAllItems() {
+        Cursor cursor = getReadableDatabase().query(CarsTableContract.TABLE_NAME, new String[]
+                {
+                        CarsTableContract._ID,
+                        CarsTableContract.COLUMN_MAKE,
+                        CarsTableContract.COLUMN_MODEL,
+                        CarsTableContract.COLUMN_YEAR,
+                        CarsTableContract.COLUMN_IMAGE
+                }, null, null, null, null, null);
+        Log.d("result", "cursorSize" + cursor.getCount());
+        return cursor;
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
             db.execSQL(SQL_DROP_TABLE);
             onCreate(db);
         }
+    }
+
+    public Cursor searchQuerry(CharSequence constraint) {
+        Cursor cursor = getReadableDatabase().query(CarsTableContract.TABLE_NAME,
+                new String[]{
+                        CarsTableContract._ID,
+                        CarsTableContract.COLUMN_MAKE,
+                        CarsTableContract.COLUMN_MODEL,
+                        CarsTableContract.COLUMN_YEAR,
+                        CarsTableContract.COLUMN_IMAGE
+                }, CarsTableContract.COLUMN_MAKE + " LIKE ?", new String[]{
+                        constraint.toString() + "%"
+                }, null, null, null);
+        return cursor;
     }
 }

@@ -25,7 +25,7 @@ import butterknife.OnClick;
 public class AddNewCarActivity extends AppCompatActivity {
 
     private CarsDatabaseOpenHelper carsDatabaseOpenHelper;
-
+    private String imageUrl;
 
     @BindView(R.id.image)
     ImageView image;
@@ -36,13 +36,12 @@ public class AddNewCarActivity extends AppCompatActivity {
     @BindView(R.id.year)
     TextView year;
 
-    private String imageUrl;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_car_activity);
         ButterKnife.bind(this);
+        carsDatabaseOpenHelper = new CarsDatabaseOpenHelper(this);
     }
 
     @OnClick(R.id.add_car_button)
@@ -51,7 +50,7 @@ public class AddNewCarActivity extends AppCompatActivity {
                 .setMake(make.getText().toString())
                 .setModel(model.getText().toString())
                 .setYear(Integer.parseInt(year.getText().toString()))
-                .setImage("")
+                .setImage(imageUrl)
                 .createCar();
         boolean isAdded = carsDatabaseOpenHelper.insertCar(car);
         if (isAdded) {
