@@ -55,13 +55,18 @@ public class AddNewCarActivity extends AppCompatActivity {
         boolean isAdded = carsDatabaseOpenHelper.insertCar(car);
         if (isAdded) {
             Toast.makeText(this, "Dodano nowy samochód!", Toast.LENGTH_SHORT).show();
+            make.setText(null);
+            model.setText(null);
+            imageUrl = null;
+            image.setImageResource(R.drawable.noimagefound);
+            year.setText(null);
         }
 
     }
 
     @OnClick(R.id.add_image_button)
     void onAddImageButtonClick() {
-       View promptView =  LayoutInflater.from(this).inflate(R.layout.dialog_prompt, null);
+        View promptView = LayoutInflater.from(this).inflate(R.layout.dialog_prompt, null);
         EditText urlEditText = (EditText) findViewById(R.id.url_edit_text);
 
         new AlertDialog.Builder(this)
