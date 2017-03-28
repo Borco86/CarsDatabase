@@ -2,17 +2,20 @@ package com.example.rent.carsdatabase.listing;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.example.rent.carsdatabase.R;
+import com.example.rent.carsdatabase.details.DetailsFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ListingActivity extends AppCompatActivity {
+public class ListingActivity extends AppCompatActivity implements OnCarItemClickListener{
 
     private static final String QUERY = "query";
 
@@ -40,5 +43,23 @@ public class ListingActivity extends AppCompatActivity {
         Intent intent = new Intent(context, ListingActivity.class);
         intent.putExtra(QUERY, query);
         return intent;
+    }
+
+    @Override
+    public void onCarItemClicked(String id) {
+        Fragment fragment = DetailsFragment.getInstance(id);
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.detail_container, fragment)
+                    .commit();
+        }else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack("listing")
+                    .commit();
+        }
     }
 }

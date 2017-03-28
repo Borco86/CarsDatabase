@@ -60,6 +60,7 @@ public class ListingFragment extends Fragment {
         RecyclerViewCursorAdapter adapter = new RecyclerViewCursorAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
+        adapter.setOnCarItemClickListener((OnCarItemClickListener) getActivity());
         adapter.setCursor(openHelper.searchQuerry(query));
     }
 
