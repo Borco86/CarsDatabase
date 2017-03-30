@@ -20,6 +20,13 @@
         </activity>
         <activity android:name=".add.AddNewCarActivity" />
         <activity android:name=".listing.ListingActivity"></activity>
+        <provider
+            android:authorities="com.example.rent.carsdatabase"
+            android:name=".BetterCarDatabaseContentProvider"
+            android:exported="true"
+            android:label="@string/app_name">
+
+        </provider>
     </application>
 
 </manifest>

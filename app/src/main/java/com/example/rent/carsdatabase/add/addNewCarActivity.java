@@ -1,6 +1,8 @@
 package com.example.rent.carsdatabase.add;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.rent.carsdatabase.Car;
 import com.example.rent.carsdatabase.CarBuilder;
 import com.example.rent.carsdatabase.CarsDatabaseOpenHelper;
+import com.example.rent.carsdatabase.CarsTableContract;
 import com.example.rent.carsdatabase.R;
 
 import butterknife.BindView;
@@ -24,7 +27,6 @@ import butterknife.OnClick;
 
 public class AddNewCarActivity extends AppCompatActivity {
 
-    private CarsDatabaseOpenHelper carsDatabaseOpenHelper;
     private String imageUrl;
 
     @BindView(R.id.image)
@@ -41,7 +43,6 @@ public class AddNewCarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_car_activity);
         ButterKnife.bind(this);
-        carsDatabaseOpenHelper = new CarsDatabaseOpenHelper(this);
     }
 
     @OnClick(R.id.add_car_button)
@@ -52,8 +53,13 @@ public class AddNewCarActivity extends AppCompatActivity {
                 .setYear(Integer.parseInt(year.getText().toString()))
                 .setImage(imageUrl)
                 .createCar();
-        boolean isAdded = carsDatabaseOpenHelper.insertCar(car);
-        if (isAdded) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CarsTableContract.COLUMN_MAKE, car.getMake());
+        contentValues.put(CarsTableContract.COLUMN_MODEL, car.getModel());
+        contentValues.put(CarsTableContract.COLUMN_YEAR, car.getYear());
+        contentValues.put(CarsTableContract.COLUMN_IMAGE, car.getImage());
+        Uri uri = getContentResolver().insert(CarsTableContract.DATA_CONTENT_URI,contentValues);
+        if (uri != null) {
             Toast.makeText(this, "Dodano nowy samochód!", Toast.LENGTH_SHORT).show();
             make.setText(null);
             model.setText(null);

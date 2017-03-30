@@ -1,13 +1,16 @@
 package com.example.rent.carsdatabase;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.FilterQueryProvider;
+import android.widget.Toast;
 
 import com.example.rent.carsdatabase.add.AddNewCarActivity;
 import com.example.rent.carsdatabase.listing.ListingActivity;
@@ -46,6 +49,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @OnClick(R.id.run_content_provider)
+    void onRunContentProvider(){
+        Cursor cursor = getContentResolver().query(Uri.parse("content://com.example.rent.carsdatabase/CARS/1"),null,null,null,null);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CarsTableContract.COLUMN_MAKE, "Opel");
+        contentValues.put(CarsTableContract.COLUMN_MODEL, "Corsa");
+        contentValues.put(CarsTableContract.COLUMN_YEAR, 1999);
+        contentValues.put(CarsTableContract.COLUMN_IMAGE, "");
+        getContentResolver().insert(Uri.parse("content://com.example.rent.carsdatabase/CARS"), new ContentValues());
+        Toast.makeText(this, "" + cursor.getCount(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, Integer.toString(cursor.getCount()) + cursor.getCount(), Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.add_new_car)
