@@ -106,6 +106,27 @@ public class BetterCarDatabaseContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        // selection = WHERE
+        SQLiteDatabase writeableDatabase = openHelper.getWritableDatabase();
+        int updatedItems = 0;
+        switch(uriMatcher.match(uri)){
+            case CARS_SINGLE_ITEM:{
+                updatedItems = writeableDatabase.update(CarsTableContract.TABLE_NAME,
+                        values,
+                        CarsTableContract._ID+ " = ?",
+                        new String[] {uri.getLastPathSegment()});
+                break;
+            }
+            case CARS_MULTIPLE_ITEM:{
+                updatedItems = writeableDatabase.update(CarsTableContract.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs);
+                break;
+            }
+
+        }
+        getContext().getContentResolver().notifyChange(uri,null);
+        return updatedItems;
     }
 }

@@ -16,20 +16,19 @@ import com.example.rent.carsdatabase.R;
 
 import butterknife.ButterKnife;
 
-/**
- * Created by RENT on 2017-03-27.
- */
 
 public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerViewCursorAdapter.ViewHolder> {
 
+    private String lastDeletedItemID = "";
     private Cursor cursor;
-
     OnCarItemClickListener onCarItemClickListener;
+    OnDeleteButtonClickListener onDeleteButtonClickListener;
 
-    public void setCursor(@Nullable Cursor cursor) {
-        this.cursor = cursor;
-        notifyDataSetChanged();
+    public void setOnDeleteButtonClickListener(OnDeleteButtonClickListener onDeleteButtonClickListener) {
+        this.onDeleteButtonClickListener = onDeleteButtonClickListener;
     }
+
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -50,15 +49,54 @@ public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerView
         holder.year.setText("rok produkcji: " + year);
         holder.makeAndModel.setText(make + " " + model);
         Glide.with(holder.imageView.getContext()).load(imageUrl).into(holder.imageView);
+        String id = cursor.getString(0);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(onCarItemClickListener != null){
-                    cursor.moveToPosition(position);
-                    onCarItemClickListener.onCarItemClicked(cursor.getString(0));
+                if (onCarItemClickListener != null) {
+                    onCarItemClickListener.onCarItemClicked(id);
                 }
             }
         });
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cursor.moveToPosition(position);
+                if (onDeleteButtonClickListener != null) {
+                    lastDeletedItemID = id;
+                    onDeleteButtonClickListener.onDeleteButtonClick(lastDeletedItemID);
+                }
+            }
+        });
+    }
+    public void setCursor(@Nullable Cursor cursor) {
+
+
+        int lastDeletedItemPosition = 0;
+        boolean shouldNotifyOnlyOneItem = false;
+
+
+        if (this.cursor != null && cursor != null) {
+            if (cursor.getCount() + 1 == this.cursor.getCount()) {
+                this.cursor.moveToFirst();
+                do {
+                    if (lastDeletedItemID.equals(this.cursor.getString(0))) {
+                        lastDeletedItemPosition = this.cursor.getPosition();
+                    }
+                } while (this.cursor.moveToNext());
+                shouldNotifyOnlyOneItem = true;
+            }
+        }
+        if (this.cursor != null) {
+            this.cursor.close();
+        }
+        this.cursor = cursor;
+        if (shouldNotifyOnlyOneItem) {
+            notifyItemRemoved(lastDeletedItemPosition);
+        } else {
+            notifyDataSetChanged();
+        }
+
     }
 
     @Override
@@ -72,6 +110,7 @@ public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerView
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
+        ImageView deleteButton;
         ImageView imageView;
         TextView makeAndModel;
         TextView year;
@@ -81,6 +120,7 @@ public class RecyclerViewCursorAdapter extends RecyclerView.Adapter<RecyclerView
             imageView = ButterKnife.findById(itemView, R.id.imageID);
             makeAndModel = ButterKnife.findById(itemView, R.id.make_and_modelID);
             year = ButterKnife.findById(itemView, R.id.yearID);
+            deleteButton = (ImageView) itemView.findViewById(R.id.delete_button);
 
         }
     }

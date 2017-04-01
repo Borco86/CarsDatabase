@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -52,7 +54,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.run_content_provider)
-    void onRunContentProvider(){
+    void onRunContentProvider(View view) {
+        // implementacja Popup Menu
+//        PopupMenu popupMenu = new PopupMenu(this, view);
+//        popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+//        popupMenu.show();
+//        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                if (item.getItemId() == R.id.justin_car) {
+//                    Toast.makeText(MainActivity.this, "Justin", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(MainActivity.this, "Selena", Toast.LENGTH_SHORT).show();
+//                }
+//                return true;
+//            }
+//        });
+
         Cursor cursor = getContentResolver().query(Uri.parse("content://com.example.rent.carsdatabase/CARS/1"),null,null,null,null);
         ContentValues contentValues = new ContentValues();
         contentValues.put(CarsTableContract.COLUMN_MAKE, "Opel");
